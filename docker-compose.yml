@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  subscriber:
+    build: ./subscriber
+    depends_on:
+      - redis
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8003"]
+    volumes:
+      - ./subscriber/src:/src
+    env_file:
+      - ./.env
+    ports:
+      - 8003:8003
+
+  api:
+    build: ./api
+    depends_on:
+      - redis
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8004"]
+    volumes:
+      - ./api/src:/src
+    env_file:
+      - ./.env
+    ports:
+      - 8004:8004
+
+  redis:
+    image: redis:6
